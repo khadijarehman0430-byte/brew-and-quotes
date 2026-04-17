@@ -1,0 +1,686 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brew & Quotes — coffee & quiet thoughts</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #faf7f2;
+      --bg2: #f2ede4;
+      --bg3: #ffffff;
+      --border: #e4d9cc;
+      --border2: #cfc0ae;
+      --text: #1e1610;
+      --text2: #6b5744;
+      --text3: #a08878;
+      --accent: #8b5e3c;
+      --accent-light: #f5ede3;
+      --success: #2c7a4d;
+      --pending: #e6a017;
+      --preparing: #4a6fa5;
+      --ready: #2c7a4d;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, 'Segoe UI', sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+
+    /* ── nav ── */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-bottom: 2rem;
+    }
+    .logo { font-size: 1.3rem; font-weight: 600; color: var(--accent); letter-spacing: -0.3px; }
+    .logo em { font-weight: 300; font-style: italic; color: var(--text2); }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { font-size: 0.85rem; color: var(--text2); text-decoration: none; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--accent); }
+    .cart-icon {
+      position: relative;
+      cursor: pointer;
+      background: var(--bg3);
+      padding: 0.3rem 0.8rem;
+      border-radius: 30px;
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .cart-count {
+      background: var(--accent);
+      color: white;
+      border-radius: 20px;
+      padding: 0 6px;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+
+    /* ── hero ── */
+    .hero {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .hero h1 { font-size: 2rem; font-weight: 300; letter-spacing: 0.1em; color: var(--text); margin-bottom: 0.4rem; }
+    .hero-sub { font-size: 0.85rem; color: var(--text3); margin-bottom: 1.5rem; }
+    .hero-quote-box {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem 1.5rem;
+      max-width: 500px;
+      margin: 0 auto;
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--text);
+    }
+
+    /* ── stats ── */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 2rem; }
+    .stat {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .stat-label { font-size: 0.7rem; color: var(--text3); margin-bottom: 4px; }
+    .stat-value { font-size: 1.6rem; font-weight: 500; color: var(--text); }
+
+    /* ── menu grid with images & order buttons ── */
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
+    .coffee-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1rem;
+      transition: all 0.25s ease;
+      text-align: center;
+    }
+    .coffee-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+    .coffee-img {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 14px;
+      margin-bottom: 0.8rem;
+      background: var(--bg2);
+    }
+    .coffee-name { font-size: 1.1rem; font-weight: 600; color: var(--text); }
+    .coffee-price { font-size: 0.9rem; color: var(--accent); font-weight: 600; margin: 5px 0; }
+    .coffee-quote { font-size: 0.75rem; font-style: italic; color: var(--text2); margin: 8px 0; min-height: 50px; }
+    .order-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      width: 100%;
+      font-family: inherit;
+      transition: background 0.15s;
+      margin-top: 5px;
+    }
+    .order-btn:hover { background: #6e4a2e; }
+
+    /* ── cart & orders section ── */
+    .orders-panel {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .panel-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .cart-items, .active-orders {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .cart-item, .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem;
+      border-bottom: 1px solid var(--border);
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .cart-item-info, .order-info { flex: 1; }
+    .cart-item-name { font-weight: 600; }
+    .cart-item-price { font-size: 0.8rem; color: var(--text3); }
+    .remove-btn {
+      background: none;
+      border: none;
+      color: var(--text3);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 0 8px;
+    }
+    .remove-btn:hover { color: #c0392b; }
+    .checkout-btn {
+      background: var(--success);
+      color: white;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+    .checkout-btn:hover { background: #1e5a3a; }
+    .order-status {
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .status-pending { background: #fff3e0; color: var(--pending); }
+    .status-preparing { background: #e8f0fe; color: var(--preparing); }
+    .status-ready { background: #e6f4ea; color: var(--success); }
+    .status-completed { background: #e6f4ea; color: var(--success); }
+    .status-cancelled { background: #fee; color: #c0392b; }
+    .order-actions button {
+      background: none;
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.6rem;
+      border-radius: 15px;
+      cursor: pointer;
+      margin: 0 2px;
+      font-size: 0.7rem;
+    }
+    .order-total { font-weight: 600; margin-top: 0.5rem; text-align: right; }
+    .empty-msg { color: var(--text3); text-align: center; padding: 1rem; }
+
+    /* ── qotd & moods (compact) ── */
+    .qotd, .random-area {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1rem 1.2rem;
+      margin: 1rem 0;
+    }
+    .mood-bar { display: flex; gap: 8px; flex-wrap: wrap; margin: 1rem 0; }
+    .mood-pill {
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.35rem 1rem;
+      border-radius: 30px;
+      cursor: pointer;
+    }
+    .mood-pill.active { background: var(--accent); color: white; border-color: var(--accent); }
+    .quote-list { background: var(--bg3); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+    .quote-row {
+      padding: 0.8rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    .quote-row.liked .qlikes { color: #c0392b; }
+    .btn-brew {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      cursor: pointer;
+    }
+    .comm-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 1rem 0; }
+    .comm-row input, .comm-row textarea {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.55rem;
+      flex: 1;
+    }
+    .btn-post {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.55rem 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .wall {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .wall-item { padding: 0.8rem; border-bottom: 1px solid var(--border); }
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text3);
+      padding-top: 1.5rem;
+      margin-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    @media (max-width: 700px) {
+      .menu-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+      .coffee-img { height: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <div class="logo">Brew & <em>Quotes</em></div>
+    <ul class="nav-links">
+      <li><a href="#menu">menu</a></li>
+      <li><a href="#orders">orders</a></li>
+      <li><a href="#moods">quotes</a></li>
+      <li><a href="#community">community</a></li>
+    </ul>
+    <div class="cart-icon" id="cartToggle">
+      🧾 cart <span class="cart-count" id="cartCount">0</span>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <h1>sip · pause · reflect</h1>
+    <p class="hero-sub">order your coffee & receive a thoughtful quote with every cup</p>
+    <div class="hero-quote-box" id="heroQuote">"Let your coffee be warm and your thoughts be kind."</div>
+  </div>
+
+  <!-- stats -->
+  <div class="stats">
+    <div class="stat"><div class="stat-label">orders completed</div><div class="stat-value" id="statOrders">0</div></div>
+    <div class="stat"><div class="stat-label">active orders</div><div class="stat-value" id="statActive">0</div></div>
+    <div class="stat"><div class="stat-label">quotes served</div><div class="stat-value" id="statQuotes">28</div></div>
+    <div class="stat"><div class="stat-label">community posts</div><div class="stat-value" id="statPosts">0</div></div>
+  </div>
+
+  <!-- menu section -->
+  <section id="menu">
+    <div class="section-label" style="font-size:0.75rem; margin-bottom:0.8rem;">☕ menu · tap order to add to cart</div>
+    <div class="menu-grid" id="menuGrid"></div>
+  </section>
+
+  <!-- orders panel (cart + active orders) -->
+  <section id="orders">
+    <div class="orders-panel">
+      <div class="panel-title">
+        <span>📋 your cart</span>
+        <span style="font-size:0.8rem;">each coffee comes with a free quote</span>
+      </div>
+      <div id="cartContainer" class="cart-items">
+        <div class="empty-msg">cart is empty  add some coffee ☕</div>
+      </div>
+      <button id="checkoutBtn" class="checkout-btn">✨ place order ✨</button>
+    </div>
+
+    <div class="orders-panel">
+      <div class="panel-title">
+        <span>🔥 active orders</span>
+        <span style="font-size:0.7rem;">barista updates status in real-time</span>
+      </div>
+      <div id="activeOrdersContainer" class="active-orders">
+        <div class="empty-msg">no active orders — place an order above</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- qotd + moods + community (condensed) -->
+  <section id="moods">
+    <div class="qotd">
+      <div style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap;">
+        <span style="font-weight:600;">☕ quote of the day</span>
+        <span id="qotdDrink" style="background:var(--bg3); padding:0.2rem 0.8rem; border-radius:20px;">Latte</span>
+        <span id="qotdText" style="flex:1; font-style:italic;">"..."</span>
+        <button id="qotdRefresh" class="btn-brew" style="background:transparent; border:1px solid var(--border2); color:var(--text2);">↺</button>
+      </div>
+    </div>
+
+    <div class="section-label">🎭 quote corner · by mood</div>
+    <div class="mood-bar" id="moodBar"></div>
+    <div class="quote-list" id="quoteList"></div>
+    
+    <div class="random-area">
+      <span class="random-text" id="randomText">press button for surprise quote</span>
+      <button class="btn-brew" id="randomBtn">☕ brew my mood</button>
+    </div>
+  </section>
+
+  <section id="community">
+    <div class="section-label">💬 community wall · share your quote</div>
+    <div class="comm-row">
+      <input id="authorInput" placeholder="your name" />
+      <textarea id="quoteInput" rows="1" placeholder="write a quote..."></textarea>
+      <button class="btn-post" id="postBtn">post</button>
+    </div>
+    <div class="wall" id="communityWall">
+      <div class="wall-empty">no quotes yet — be the first ✨</div>
+    </div>
+  </section>
+
+  <footer>slow coffee · deep quotes · calm mind | orders are prepared with love ☕</footer>
+</div>
+
+<script>
+  // --- Coffee Menu Data with images & quotes ---
+  const coffeeMenu = [
+    { id: 1, name: "Latte", price: 750, quote: "Like a warm hug on a quiet morning  soft, steady, kind.", img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=300&h=200&fit=crop" },
+    { id: 2, name: "Cappuccino", price: 850, quote: "Bold foam, gentle soul. Balance in every sip.", img: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300&h=200&fit=crop" },
+    { id: 3, name: "Espresso", price: 550, quote: "Short, strong, and unforgettable like a true moment.", img: "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=300&h=200&fit=crop" },
+    { id: 4, name: "Mocha", price: 900, quote: "Where chocolate meets courage. Sweet and fierce.", img: "https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?w=300&h=200&fit=crop" },
+    { id: 5, name: "Flat White", price: 650, quote: "Silk and whispers  the poetry of simplicity.", img: "https://images.unsplash.com/photo-1534778101976-62847782c213?w=300&h=200&fit=crop" },
+    { id: 6, name: "Cold Brew", price: 850, quote: "Patience brewed overnight, served with clarity.", img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300&h=200&fit=crop" }
+  ];
+
+  // Quotes database
+  const quotesDB = {
+    love: [
+      { text: "You are my favorite reason to lose sleep.", likes: 12 },
+      { text: "Coffee and your laugh: two things I would never refuse.", likes: 8 },
+      { text: "Love is brewing, slowly, beautifully.", likes: 19 }
+    ],
+    motivation: [
+      { text: "Wake up, brew hope, and make today unforgettable.", likes: 7 },
+      { text: "The grind is real, but so is your strength.", likes: 14 },
+      { text: "One small sip, one giant leap for your spirit.", likes: 5 }
+    ],
+    peace: [
+      { text: "Let the steam carry your worries away.", likes: 11 },
+      { text: "Silence is the strongest coffee for the soul.", likes: 16 },
+      { text: "Peace begins when you put the phone down and pick a cup up.", likes: 9 }
+    ],
+    sadness: [
+      { text: "Even bitter coffee teaches us to appreciate sweetness.", likes: 6 },
+      { text: "Some days are dark roast. That is okay. Light will come.", likes: 21 },
+      { text: "Let the tears fall, then take a sip  you are not alone.", likes: 13 }
+    ]
+  };
+
+  const heroQuotes = [
+    "Coffee is a language in itself it says rest, think, feel.",
+    "Between sips, we find ourselves.",
+    "Brew slowly, love deeply.",
+    "Let your coffee be warm and your thoughts be kind.",
+    "Every cup is a small act of self-care."
+  ];
+
+  const qotdPairs = [
+    ["Honey Oat Latte", "Tenderness exists even in the ordinary."],
+    ["Spiced Cardamom Brew", "May your cup overflow with small joys."],
+    ["Vanilla Rooibos", "Stillness is the new luxury."],
+    ["Rose Latte", "Softness is a form of strength."]
+  ];
+
+  // --- App State ---
+  let cart = []; // { id, name, price, quote }
+  let orders = []; // { id, items, total, status, timestamp, orderQuote }
+  let nextOrderId = 1;
+  let completedCount = 0;
+  let likedRows = {};
+  let currentMood = "love";
+  let communityQuotes = [];
+  let statQuotesCount = 28;
+
+  // Helper
+  function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  // Render Menu
+  function renderMenu() {
+    const grid = document.getElementById("menuGrid");
+    grid.innerHTML = coffeeMenu.map(item => `
+      <div class="coffee-card">
+        <img class="coffee-img" src="${item.img}" alt="${item.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=300&h=200&fit=crop'">
+        <div class="coffee-name">${item.name}</div>
+        <div class="coffee-price">Rs. ${item.price}</div>
+        <div class="coffee-quote">“${item.quote}”</div>
+        <button class="order-btn" data-id="${item.id}">+ add to cart</button>
+      </div>
+    `).join("");
+    document.querySelectorAll(".order-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const id = parseInt(btn.dataset.id);
+        const coffee = coffeeMenu.find(c => c.id === id);
+        addToCart(coffee);
+      });
+    });
+  }
+
+  function addToCart(coffee) {
+    cart.push({ ...coffee });
+    updateCartUI();
+    updateStats();
+  }
+
+  function updateCartUI() {
+    const container = document.getElementById("cartContainer");
+    const countSpan = document.getElementById("cartCount");
+    countSpan.textContent = cart.length;
+    if (cart.length === 0) {
+      container.innerHTML = '<div class="empty-msg">cart is empty — add some coffee ☕</div>';
+      return;
+    }
+    let total = 0;
+    container.innerHTML = cart.map((item, idx) => {
+      total += item.price;
+      return `
+        <div class="cart-item">
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-price">Rs. ${item.price}</div>
+            <div style="font-size:0.7rem; color:var(--text3);">“${item.quote.substring(0, 50)}...”</div>
+          </div>
+          <button class="remove-btn" data-index="${idx}">✖</button>
+        </div>
+      `;
+    }).join("");
+    container.insertAdjacentHTML('beforeend', `<div class="order-total">total: Rs. ${total}</div>`);
+    document.querySelectorAll(".remove-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const idx = parseInt(btn.dataset.index);
+        cart.splice(idx, 1);
+        updateCartUI();
+        updateStats();
+      });
+    });
+  }
+
+  function placeOrder() {
+    if (cart.length === 0) {
+      alert("cart is empty! add some coffee first ☕");
+      return;
+    }
+    const total = cart.reduce((sum, i) => sum + i.price, 0);
+    const randomQuote = rand(heroQuotes);
+    const newOrder = {
+      id: nextOrderId++,
+      items: [...cart],
+      total: total,
+      status: "pending",
+      timestamp: new Date().toLocaleTimeString(),
+      orderQuote: randomQuote
+    };
+    orders.unshift(newOrder);
+    cart = [];
+    updateCartUI();
+    renderActiveOrders();
+    updateStats();
+    // show alert with quote
+    alert(`✨ Order #${newOrder.id} placed! ✨\nYour quote: "${randomQuote}"\nTotal: Rs. ${total}\nBarista will prepare your order.`);
+  }
+
+  function updateOrderStatus(orderId, newStatus) {
+    const order = orders.find(o => o.id === orderId);
+    if (order) {
+      order.status = newStatus;
+      if (newStatus === "completed") {
+        completedCount++;
+        statQuotesCount++;
+        document.getElementById("statQuotes").textContent = statQuotesCount;
+      }
+      renderActiveOrders();
+      updateStats();
+    }
+  }
+
+  function renderActiveOrders() {
+    const container = document.getElementById("activeOrdersContainer");
+    const activeOrders = orders.filter(o => o.status !== "completed" && o.status !== "cancelled");
+    if (activeOrders.length === 0) {
+      container.innerHTML = '<div class="empty-msg">no active orders  place an order above</div>';
+      document.getElementById("statActive").textContent = "0";
+      return;
+    }
+    document.getElementById("statActive").textContent = activeOrders.length;
+    container.innerHTML = activeOrders.map(order => `
+      <div class="order-item">
+        <div class="order-info">
+          <strong>#${order.id}</strong> · ${order.items.map(i => i.name).join(", ")}<br>
+          <span style="font-size:0.7rem;">Rs. ${order.total} | ${order.timestamp}</span><br>
+          <span style="font-size:0.7rem; font-style:italic;">“${order.orderQuote.substring(0, 60)}”</span>
+        </div>
+        <div style="text-align:right;">
+          <span class="order-status status-${order.status}">${order.status.toUpperCase()}</span>
+          <div class="order-actions" style="margin-top:6px;">
+            ${order.status === "pending" ? `<button class="status-preparing" data-id="${order.id}" data-status="preparing">👨‍🍳 prepare</button>` : ""}
+            ${order.status === "preparing" ? `<button class="status-ready" data-id="${order.id}" data-status="ready">✅ ready</button>` : ""}
+            ${order.status === "ready" ? `<button class="status-completed" data-id="${order.id}" data-status="completed">🎉 complete</button>` : ""}
+            ${order.status !== "completed" ? `<button class="status-cancelled" data-id="${order.id}" data-status="cancelled">✖ cancel</button>` : ""}
+          </div>
+        </div>
+      </div>
+    `).join("");
+    document.querySelectorAll(".order-actions button").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const id = parseInt(btn.dataset.id);
+        const newStatus = btn.dataset.status;
+        updateOrderStatus(id, newStatus);
+      });
+    });
+  }
+
+  function updateStats() {
+    document.getElementById("statOrders").textContent = completedCount;
+    document.getElementById("statActive").textContent = orders.filter(o => o.status !== "completed" && o.status !== "cancelled").length;
+    document.getElementById("statPosts").textContent = communityQuotes.length;
+  }
+
+  // --- Mood & Quotes ---
+  function renderMoodBar() {
+    const bar = document.getElementById("moodBar");
+    bar.innerHTML = "";
+    ["love", "motivation", "peace", "sadness"].forEach(m => {
+      const btn = document.createElement("button");
+      btn.className = "mood-pill" + (m === currentMood ? " active" : "");
+      btn.textContent = m;
+      btn.addEventListener("click", () => { currentMood = m; renderMoodBar(); renderQuotes(); });
+      bar.appendChild(btn);
+    });
+  }
+  function renderQuotes() {
+    const list = document.getElementById("quoteList");
+    list.innerHTML = "";
+    quotesDB[currentMood].forEach((q, i) => {
+      const key = currentMood + i;
+      const liked = !!likedRows[key];
+      const row = document.createElement("div");
+      row.className = "quote-row" + (liked ? " liked" : "");
+      row.innerHTML = `<span>“${q.text}”</span><span class="qlikes">${liked ? "♥" : "♡"} ${q.likes + (liked ? 1 : 0)}</span>`;
+      row.addEventListener("click", () => {
+        likedRows[key] = !likedRows[key];
+        renderQuotes();
+      });
+      list.appendChild(row);
+    });
+  }
+  function randomQuote() {
+    const all = Object.values(quotesDB).flat().map(q => q.text);
+    const pick = rand(all);
+    const el = document.getElementById("randomText");
+    el.textContent = `“${pick}”`;
+    statQuotesCount++;
+    document.getElementById("statQuotes").textContent = statQuotesCount;
+  }
+  function updateQotd() {
+    const pair = rand(qotdPairs);
+    document.getElementById("qotdDrink").textContent = pair[0];
+    document.getElementById("qotdText").textContent = `“${pair[1]}”`;
+  }
+  function newHeroQuote() {
+    document.getElementById("heroQuote").textContent = `“${rand(heroQuotes)}”`;
+  }
+
+  // Community Wall
+  function renderWall() {
+    const wall = document.getElementById("communityWall");
+    if (communityQuotes.length === 0) {
+      wall.innerHTML = '<div class="wall-empty">no quotes yet — be the first ✨</div>';
+      return;
+    }
+    wall.innerHTML = communityQuotes.map(q => `<div class="wall-item"><div class="wall-quote">“${escapeHtml(q.text)}”</div><div class="wall-author">— ${escapeHtml(q.author)}</div></div>`).join("");
+  }
+  function escapeHtml(str) { return str.replace(/[&<>]/g, function(m) { return m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'; }); }
+  function postQuote() {
+    const text = document.getElementById("quoteInput").value.trim();
+    const author = document.getElementById("authorInput").value.trim() || "quiet soul";
+    if (!text) return;
+    communityQuotes.unshift({ text, author });
+    document.getElementById("authorInput").value = "";
+    document.getElementById("quoteInput").value = "";
+    renderWall();
+    updateStats();
+  }
+
+  // Init
+  document.addEventListener("DOMContentLoaded", () => {
+    renderMenu();
+    updateCartUI();
+    renderActiveOrders();
+    renderMoodBar();
+    renderQuotes();
+    renderWall();
+    updateQotd();
+    newHeroQuote();
+    document.getElementById("checkoutBtn").addEventListener("click", placeOrder);
+    document.getElementById("qotdRefresh").addEventListener("click", updateQotd);
+    document.getElementById("randomBtn").addEventListener("click", randomQuote);
+    document.getElementById("postBtn").addEventListener("click", postQuote);
+    document.getElementById("quoteInput").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); postQuote(); } });
+    setInterval(() => {
+      // auto status progression for demo (optional: auto move pending->preparing after 10 sec if needed)
+      // but manual is more fun
+    }, 1000);
+  });
+</script>
+</body>
+</html>
+```
